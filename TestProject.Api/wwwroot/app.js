@@ -71,10 +71,12 @@ class DirectoryBrowserComponent {
                 <input type="file" id="fileInput">
             </div>
         </div>`;
+            // FUTURE: add an input for a target path to upload the file.
             this.#outlet.appendChild(commandBar);
             const uploadInput = commandBar.querySelector('#upload input');
             uploadInput.addEventListener('change', () => {
                 const path = (window.location.hash ?? '').replace('#', '');
+                // ^^ path to come from window hash plus a user entered directory name
                 this.#fileSvc.upload(path, uploadInput.files[0])
                     .then(_ => {
                         this.loadPath();
