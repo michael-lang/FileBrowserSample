@@ -61,12 +61,26 @@ class DirectoryBrowserComponent {
         if (!commandBar) {
             commandBar = document.createElement('div');
             commandBar.innerHTML = `<div class="command-bar">
+            <div class="details">
             <a href="#">
                 <span class="material-symbols-outlined">arrow_upward</span>
             </a>
             <span id="currentFolder"></span>
+            </div>
+            <div id="upload">
+                <input type="file" id="fileInput">
+            </div>
         </div>`;
             this.#outlet.appendChild(commandBar);
+            const uploadInput = commandBar.querySelector('#upload input');
+            uploadInput.addEventListener('change', () => {
+                const path = (window.location.hash ?? '').replace('#', '');
+                this.#fileSvc.upload(path, uploadInput.files[0])
+                    .then(_ => {
+                        this.loadPath();
+                        uploadInput.value = '';
+                    });
+            });
         }
         const folderElm = commandBar.querySelector('#currentFolder');
         folderElm.innerText = files.length === 0 ? '' : files[0].directory;
@@ -102,8 +116,6 @@ class DirectoryBrowserComponent {
         }
 
     }
-
-
 
     init(outlet) {
         if (!outlet) {
